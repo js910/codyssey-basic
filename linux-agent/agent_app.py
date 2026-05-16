@@ -24,7 +24,7 @@ def start_server():
     try:
         server.bind(('0.0.0.0', 15034))
         server.listen(5)
-        # 관제 스크립트가 ss -tlnp로 정상 인식할 수 있도록 무한 루프 유지
+        # 무한 루프 유지
         while True:
             conn, addr = server.accept()
             conn.close()
