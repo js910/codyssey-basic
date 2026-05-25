@@ -61,7 +61,10 @@ if [ -f "$LOG_FILE" ]; then
             [ -f "${LOG_FILE}.$i" ] && mv "${LOG_FILE}.$i" "${LOG_FILE}.$((i + 1))"
         done
         mv "$LOG_FILE" "${LOG_FILE}.1"
+
+
         touch "$LOG_FILE"
-        chmod 770 "$LOG_FILE"
+        chown agent-admin:agent-core "$LOG_FILE"
+        chmod 660 "$LOG_FILE"
     fi
 fi

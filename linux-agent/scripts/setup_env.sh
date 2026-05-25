@@ -5,6 +5,7 @@ sed -i 's/\r$//' "$0" 2>/dev/null || true # 줄바꿈 기호 제거
 # 환경 변수
 REPO_PATH=$(pwd)
 ENV_PROFILE="/etc/profile.d/agent_env.sh"
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # 글로벌 환경 변수 등록
 cat << 'EOF' > $ENV_PROFILE
@@ -15,7 +16,7 @@ export AGENT_KEY_PATH="$AGENT_HOME/api_keys/t_secret.key"
 export AGENT_LOG_DIR="/var/log/agent-app"
 EOF
 chmod +x $ENV_PROFILE
-source $ENV_PROFILE
+. $ENV_PROFILE
 
 # 필수 패키지 설치
 [ -f /etc/ssh/sshd_config ] || (apt-get update && apt-get install -y openssh-server)
@@ -30,6 +31,7 @@ systemctl daemon-reload
 if systemctl list-unit-files | grep -q "ssh.socket"; then
     mkdir -p /etc/systemd/system/ssh.socket.d
     echo -e "[Socket]\nListenStream=\nListenStream=20022" > /etc/systemd/system/ssh.socket.d/listen.conf
+    systemctl daemon-reload
     systemctl restart ssh.socket ssh
 else
     # ssh.socket이 없는 환경 (22.04)
@@ -37,9 +39,12 @@ else
 fi
 
 # 2. 방화벽 설정
-ufw default deny inbound
-ufw allow 20022/tcp && ufw allow $AGENT_PORT/tcp
-(echo "y" | ufw enable) 2>/dev/null || true
+ufw --force reset
+ufw default deny incoming
+ufw default allow outgoing
+ufw allow 20022/tcp
+ufw allow 15034/tcp
+ufw --force enable
 
 # 3. 그룹 및 계정 세팅
 groupadd -f agent-common && groupadd -f agent-core
@@ -73,9 +78,14 @@ chmod 660 "$AGENT_KEY_PATH"
 chown agent-dev:agent-core $AGENT_HOME/bin/monitor.sh
 chmod 750 $AGENT_HOME/bin/monitor.sh
 
+chown agent-dev:agent-core $AGENT_HOME/bin
+chmod 770 $AGENT_HOME/bin
+chown agent-admin:agent-core $AGENT_LOG_DIR/monitor.log
+chmod 660 $AGENT_LOG_DIR/monitor.log
+
 # agent-admin 계정 크론탭 등록
-(crontab -u agent-admin -l 2>/dev/null | grep -v "monitor.sh" ; echo "* * * * * source /etc/profile.d/agent_env.sh && $AGENT_HOME/bin/monitor.sh") | crontab -u agent-admin -
-systemctl restart cron
+echo '* * * * * /bin/bash /home/agent-admin/agent-app/bin/monitor.sh >> /tmp/monitor_cron.log 2>&1' | crontab -u agent-admin -
+systemctl restart cron 2>/dev/null || service cron restart 2>/dev/null || true
 
 # 6. 설정 검증 및 상태 출력
 echo -e "\n=== [AGENT INFRA SYSTEM CHECK] ==="
