@@ -55,9 +55,9 @@ tail -f /var/log/agent-app/monitor.log
 ```text
 .
 ├── scripts
- |	├── setup_env.sh           # 환경 구축 자동화 스크립트
- |	├── monitor.sh             # 시스템 자원 관제 및 로그 수집 스크립트
- |	└── agent_app.py           # 모니터링 애플리케이션
+|	├── setup_env.sh           # 환경 구축 자동화 스크립트
+|	├── monitor.sh             # 시스템 자원 관제 및 로그 수집 스크립트
+|	└── agent_app.py           # 모니터링 애플리케이션
 └── README.md              # 본 문서
 ```
 
@@ -76,14 +76,12 @@ tail -f /var/log/agent-app/monitor.log
 | 디렉토리 권한 확인 | `sudo ls -ld /home/agent-admin/agent-app` |
 | monitor.sh 권한 확인 | `sudo ls -l /home/agent-admin/agent-app/bin/monitor.sh` |
 | 환경 변수 확인 | `cat /etc/profile.d/agent_env.sh` |
-| API Key 생성 확인 | `cat /home/agent-admin/agent-app/api_keys/t_secret.key` |
+| API Key 생성 확인 | `sudo cat /home/agent-admin/agent-app/api_keys/t_secret.key` |
 | 앱 실행 확인 | `ps -ef \| grep agent_app.py` |
-| Boot Sequence 확인 | `sudo python3 /home/agent-admin/agent-app/agent_app.py` |
 | APP 포트 LISTEN 확인 | `ss -tulnp \| grep 15034` |
-| monitor.sh 실행 확인 | `sudo /bin/bash /home/agent-admin/agent-app/bin/monitor.sh` |
 | monitor.log 기록 확인 | `sudo tail -f /var/log/agent-app/monitor.log` |
 | cron 등록 확인 | `sudo crontab -l -u agent-admin` |
-| cron 자동 실행 확인 | `sudo grep -i "cron" /var/log/syslog \| grep "monitor.sh"` | tail -n 10 | awk '{print $1}'` |
+| cron 자동 실행 확인 | `sudo grep -i "cron" /var/log/syslog \| grep "monitor.sh" \| tail -n 10 \| awk '{print $1}'` |
 | 로그 로테이션 확인 | `sudo ls -lh /var/log/agent-app/` |
 
 ### 📋 권한 및 디렉토리 격리 상세

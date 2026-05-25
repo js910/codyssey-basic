@@ -3,7 +3,6 @@ set -e
 sed -i 's/\r$//' "$0" 2>/dev/null || true # 줄바꿈 기호 제거
 
 # 환경 변수
-REPO_PATH=$(pwd)
 ENV_PROFILE="/etc/profile.d/agent_env.sh"
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
@@ -63,8 +62,8 @@ mkdir -p $AGENT_HOME/{upload_files,api_keys,bin} $AGENT_LOG_DIR
 echo "agent_api_key_test" > "$AGENT_KEY_PATH"
 cp /dev/null $AGENT_LOG_DIR/monitor.log
 
-cp "$REPO_PATH/agent_app.py" "$AGENT_HOME/agent_app.py"
-cp "$REPO_PATH/monitor.sh" "$AGENT_HOME/bin/monitor.sh"
+cp "scripts/agent_app.py" "$AGENT_HOME/agent_app.py"
+cp "scripts/monitor.sh" "$AGENT_HOME/bin/monitor.sh"
 sed -i 's/\r$//' "$AGENT_HOME/agent_app.py"
 sed -i 's/\r$//' "$AGENT_HOME/bin/monitor.sh"
 
