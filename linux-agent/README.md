@@ -1,14 +1,12 @@
 # 시스템 관제 자동화 스크립트 개발
 
 <p>
-   <img src="[https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)">
-   <img src="[https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)">
-   <img src="[https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white](https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)">
-   <img src="[https://img.shields.io/badge/OpenSSH-002446?style=for-the-badge&logo=openssh&logoColor=white](https://img.shields.io/badge/OpenSSH-002446?style=for-the-badge&logo=openssh&logoColor=white)">
-   <img src="[https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)">
+   <img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white">
+   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+   <img src="https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white">
+   <img src="https://img.shields.io/badge/OpenSSH-002446?style=for-the-badge&logo=openssh&logoColor=white">
+   <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white">
 </p>
-
-<br>
 
 다중 사용자 환경에서의 네트워크 보안 설정, 파일 시스템 권한 분리, 시스템 관제 쉘 스크립트(`monitor.sh`) 자동화를 다루는 인프라 엔지니어링 프로젝트입니다.
 
@@ -28,7 +26,7 @@
 Step 1. 저장소 클론 및 루트 진입
 ```bash
 git clone https://github.com/js910/codyssey-basic
-cd linux-agent
+cd codyssey-basic/linux-agent
 ```
 
 Step 2. 권한 부여 및 환경 구축 (sudo 권한 필요)
@@ -54,12 +52,14 @@ tail -f /var/log/agent-app/monitor.log
 - **Security**: UFW (Uncomplicated Firewall), OpenSSH Server
 
 ### Repository 구조
+```text
 .
 ├── scripts
  |	├── setup_env.sh           # 환경 구축 자동화 스크립트
  |	├── monitor.sh             # 시스템 자원 관제 및 로그 수집 스크립트
  |	└── agent_app.py           # 모니터링 애플리케이션
 └── README.md              # 본 문서
+```
 
 <br>
 
@@ -68,8 +68,8 @@ tail -f /var/log/agent-app/monitor.log
 ### ✅ 필수 항목 점검표
 | 항목 | 점검 방법 |
 |---|---|
-| SSH 포트 변경 및 Root 접속 차단 | `sudo grep -E "^Port|^PermitRootLogin" /etc/ssh/sshd_config` |
-| SSH 포트 LISTEN 확인 | `ss -tulnp | grep 20022` |
+| SSH 포트 변경 및 Root 접속 차단 | `sudo grep -E "^Port\|^PermitRootLogin" /etc/ssh/sshd_config` |
+| SSH 포트 LISTEN 확인 | `ss -tulnp \| grep 20022` |
 | UFW 활성화 및 허용 포트 확인 | `sudo ufw status numbered` |
 | 계정 생성 확인 | `id agent-admin && id agent-dev && id agent-test` |
 | 그룹 매핑 확인 | `groups agent-admin` |
@@ -77,13 +77,13 @@ tail -f /var/log/agent-app/monitor.log
 | monitor.sh 권한 확인 | `sudo ls -l /home/agent-admin/agent-app/bin/monitor.sh` |
 | 환경 변수 확인 | `cat /etc/profile.d/agent_env.sh` |
 | API Key 생성 확인 | `cat /home/agent-admin/agent-app/api_keys/t_secret.key` |
-| 앱 실행 확인 | `ps -ef | grep agent_app.py` |
+| 앱 실행 확인 | `ps -ef \| grep agent_app.py` |
 | Boot Sequence 확인 | `sudo python3 /home/agent-admin/agent-app/agent_app.py` |
-| APP 포트 LISTEN 확인 | `ss -tulnp | grep 15034` |
+| APP 포트 LISTEN 확인 | `ss -tulnp \| grep 15034` |
 | monitor.sh 실행 확인 | `sudo /bin/bash /home/agent-admin/agent-app/bin/monitor.sh` |
 | monitor.log 기록 확인 | `sudo tail -f /var/log/agent-app/monitor.log` |
 | cron 등록 확인 | `sudo crontab -l -u agent-admin` |
-| cron 자동 실행 확인 | `sudo grep -i "cron" /var/log/syslog | grep "monitor.sh" | tail -n 10 | awk '{print $1}'` |
+| cron 자동 실행 확인 | `sudo grep -i "cron" /var/log/syslog \| grep "monitor.sh"` | tail -n 10 | awk '{print $1}'` |
 | 로그 로테이션 확인 | `sudo ls -lh /var/log/agent-app/` |
 
 ### 📋 권한 및 디렉토리 격리 상세
