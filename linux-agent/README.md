@@ -55,9 +55,11 @@ tail -f /var/log/agent-app/monitor.log
 ```text
 .
 ├── scripts
-|	├── setup_env.sh           # 환경 구축 자동화 스크립트
-|	├── monitor.sh             # 시스템 자원 관제 및 로그 수집 스크립트
-|	└── agent_app.py           # 모니터링 애플리케이션
+│	├── setup_env.sh           # 환경 구축 자동화 스크립트
+│	├── monitor.sh             # 시스템 자원 관제 및 로그 수집 스크립트
+│	├── report.sh         # 관제 로그 분석 및 통계 리포트 생성 (보너스)
+│	├── log_policy.sh     # 로그 압축 및 보관 정책 관리 (보너스)
+│	└── agent_app.py           # 모니터링 애플리케이션
 └── README.md              # 본 문서
 ```
 
@@ -159,4 +161,38 @@ Agent READY
 [2026-05-21 17:38:02] PID:4561 CPU:0.2% MEM:11.19% DISK_UD:1% [WARNING] High MEM usage!
 [2026-05-21 17:39:02] PID:4561 CPU:0.2% MEM:11.15% DISK_UD:1% [WARNING] High MEM usage!
 [2026-05-21 17:40:02] PID:4561 CPU:0.2% MEM:11.32% DISK_UD:1% [WARNING] High MEM usage!
+```
+
+<br>
+
+## 6. 보너스 과제
+```bash
+# 수동 실행
+/bin/bash /home/agent-admin/agent-app/bin/report.sh	# +"[시작시간]" "[끝시간]"
+/bin/bash /home/agent-admin/agent-app/bin/log_policy.sh
+```
+
+### report.sh
+- monitor.log 분석
+- 10분마다 자동 실행
+- CPU / MEM / DISK 평균, 최대, 최소 사용률 산출
+```bash
+tail -n 6 /var/log/agent-app/report_cron.log
+```
+```bash
+===== CPU =====
+avg=0.10 max=0.20 min=0.00 count=6
+===== MEM =====
+avg=11.73 max=11.88 min=11.56 count=6
+===== DISK =====
+avg=1.00 max=1.00 min=1.00 count=6
+```
+
+### log_policy.sh
+- 매일 03:00 실행
+- 7일 이상 로그 자동 압축
+- 압축 로그 별도 보관
+- 30일 이상 보관 로그 자동 삭제
+```bash
+tail -f /var/log/agent-app/policy_cron.log
 ```

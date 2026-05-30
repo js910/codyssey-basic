@@ -61,11 +61,17 @@ usermod -aG agent-common agent-test
 mkdir -p $AGENT_HOME/{upload_files,api_keys,bin} $AGENT_LOG_DIR
 echo "agent_api_key_test" > "$AGENT_KEY_PATH"
 cp /dev/null $AGENT_LOG_DIR/monitor.log
+cp /dev/null $AGENT_LOG_DIR/report_cron.log
+cp /dev/null $AGENT_LOG_DIR/policy_cron.log
 
 cp "scripts/agent_app.py" "$AGENT_HOME/agent_app.py"
 cp "scripts/monitor.sh" "$AGENT_HOME/bin/monitor.sh"
+cp "scripts/report.sh" "$AGENT_HOME/bin/report.sh"
+cp "scripts/log_policy.sh" "$AGENT_HOME/bin/log_policy.sh" 
 sed -i 's/\r$//' "$AGENT_HOME/agent_app.py"
-sed -i 's/\r$//' "$AGENT_HOME/bin/monitor.sh"
+for f in monitor.sh report.sh log_policy.sh; do
+    sed -i 's/\r$//' "$AGENT_HOME/bin/$f"
+done
 
 # 5. 권한 세팅
 chown -R agent-admin:agent-core $AGENT_HOME $AGENT_LOG_DIR
@@ -81,9 +87,15 @@ chown agent-dev:agent-core $AGENT_HOME/bin
 chmod 770 $AGENT_HOME/bin
 chown agent-admin:agent-core $AGENT_LOG_DIR/monitor.log
 chmod 660 $AGENT_LOG_DIR/monitor.log
+chmod +x $AGENT_HOME/bin/report.sh
+chmod +x $AGENT_HOME/bin/log_policy.sh
 
 # agent-admin 계정 크론탭 등록
-echo '* * * * * /bin/bash /home/agent-admin/agent-app/bin/monitor.sh >> /tmp/monitor_cron.log 2>&1' | crontab -u agent-admin -
+cat << EOF | crontab -u agent-admin -
+* * * * * /bin/bash /home/agent-admin/agent-app/bin/monitor.sh >> /tmp/monitor_cron.log 2>&1
+*/10 * * * * /bin/bash /home/agent-admin/agent-app/bin/report.sh >> /var/log/agent-app/report_cron.log 2>&1
+0 3 * * * /bin/bash /home/agent-admin/agent-app/bin/log_policy.sh >> /var/log/agent-app/policy_cron.log 2>&1
+EOF
 systemctl restart cron 2>/dev/null || service cron restart 2>/dev/null || true
 
 # 6. 설정 검증 및 상태 출력
