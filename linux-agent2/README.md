@@ -9,7 +9,7 @@ Memory Leak, CPU Watchdog, Deadlock 장애를 분석하고
 ## 분석 대상 장애
 
 - Memory Leak → OOM / MemoryGuard 종료
-- CPU Spike → Watchdog 미발동 상태 분석
+- CPU Spike → Watchdog 분석
 - Deadlock → 멀티스레드 교착 상태
 
 <br>
