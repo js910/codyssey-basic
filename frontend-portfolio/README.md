@@ -28,8 +28,9 @@ frontend-portfolio/
 ├── index.html
 ├── css/
 │   └── style.css
-└── js/
-    └── main.js
+├── js/
+│   └── main.js
+└── images/
 ```
 
 ## ✨ 주요 기능
@@ -69,20 +70,15 @@ Fork Repository는 제외하고 본인 프로젝트만 표시
 
 ## 🌐 배포
 
-**GitHub Pages**
-
-배포 후 URL 추가 예정
+[**GitHub Pages**](https://js910.github.io/codyssey-basic/frontend-portfolio/)
 
 ## 📸 Screenshots
 
-### Desktop
+| Light Mode | Dark Mode |
+|:---:|:---:|
+| <img src="images/light-mode.png" width="500"> | <img src="images/dark-mode.png" width="500"> |
 
-스크린샷 추가 예정
+| Desktop | Mobile |
+|:---:|:---:|
+| <img src="images/desktop.png" width="500"> | <img src="images/mobile.png" width="500"> |
 
-### Mobile
-
-스크린샷 추가 예정
-
-### Dark Mode
-
-스크린샷 추가 예정
