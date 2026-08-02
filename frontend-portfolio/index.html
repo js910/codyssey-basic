@@ -15,22 +15,21 @@
     <nav class="nav">
         <a href="#hero" class="logo">Portfolio</a>
 
-    <button type="button" class="menu-toggle" aria-label="메뉴 열기" aria-expanded="false">
-        ☰
-    </button>
+        <button type="button" class="menu-toggle" aria-label="메뉴 열기" aria-expanded="false">
+            ☰
+        </button>
 
-    <ul class="nav-menu">
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
+        <ul class="nav-menu">
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
 
-    <button type="button" class="theme-toggle" aria-label="다크 모드 전환">
-        🌙
-    </button>
-</nav>
-
+        <button type="button" class="theme-toggle" aria-label="다크 모드 전환">
+            🌙
+        </button>
+    </nav>
 </header>
 
 <main>
@@ -102,6 +101,24 @@
             GitHub에서 프로젝트 목록을 가져옵니다.
         </p>
 
+        <div class="project-filter" aria-label="프로젝트 언어 필터">
+            <button type="button" class="filter-button active" data-language="all">
+                전체
+            </button>
+
+            <button type="button" class="filter-button" data-language="Java">
+                Java
+            </button>
+
+            <button type="button" class="filter-button" data-language="Python">
+                Python
+            </button>
+
+            <button type="button" class="filter-button" data-language="JavaScript">
+                JavaScript
+            </button>
+        </div>
+
         <div class="project-status" aria-live="polite">
             프로젝트를 불러오는 중...
         </div>
@@ -147,16 +164,16 @@
     <div class="container">
         <p>&copy; 2026 <span id="footer-name"></span>. All rights reserved.</p>
 
-    <div class="social-links">
-        <a href="https://github.com/" target="_blank" rel="noopener noreferrer">
-            GitHub
-        </a>
-        <a href="#" target="_blank" rel="noopener noreferrer">
-            LinkedIn
-        </a>
-    </div>
-</div>
+        <div class="social-links">
+            <a href="https://github.com/" target="_blank" rel="noopener noreferrer">
+                GitHub
+            </a>
 
+            <a href="https://kr.linkedin.com/" target="_blank" rel="noopener noreferrer">
+                LinkedIn
+            </a>
+        </div>
+    </div>
 </footer>
 
 <button type="button" class="scroll-top" aria-label="페이지 맨 위로 이동">
