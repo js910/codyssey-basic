@@ -129,7 +129,6 @@ const renderError = (message) => {
 
     // 다시 시도 시 API 재요청
     const retryButton = projectStatus.querySelector(".retry-button");
-
     retryButton.addEventListener("click", fetchProjects);
 };
 
@@ -167,6 +166,10 @@ const renderProjects = (projects) => {
             `;
         })
         .join("");
+
+    // 렌더링 완료 이벤트 지정
+    const event = new CustomEvent("projects-rendered");
+    window.dispatchEvent(event);
 };
 
 

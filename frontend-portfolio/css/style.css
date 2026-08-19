@@ -118,6 +118,7 @@ button {
 
 .section {
     padding: var(--spacing-xl) 0;
+    scroll-margin-top: 80px;
 }
 
 .section h2 {
@@ -269,9 +270,10 @@ button {
 }
 
 .hero-description {
+    min-height: 3.2em;
+
     max-width: 600px;
     margin: 0 auto var(--spacing-lg);
-
     color: var(--color-text-secondary);
 }
 
