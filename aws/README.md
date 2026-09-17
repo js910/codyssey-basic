@@ -77,8 +77,6 @@ curl -i http://localhost
 
 `HTTP/1.1 200 OK` 응답을 확인하였다.
 
-![Server Verification](screenshots/8-server-verification.png)
-
 ## 6. 외부 접속 검증
 
 검증 방식: **A - 브라우저 접속**
@@ -86,8 +84,6 @@ curl -i http://localhost
 URL: `http://43.203.210.58`
 
 외부 브라우저에서 Nginx 기본 페이지가 정상적으로 출력되는 것을 확인하였다.
-
-![External Access](screenshots/7-external-access.png)
 
 ## 7. 트러블슈팅
 
@@ -134,4 +130,4 @@ http://<EC2 Public IP>
 
 ## 10. 증빙
 
-* (screenshots/)
+[스크린샷 폴더](screenshots/)
