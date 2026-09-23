@@ -1,18 +1,18 @@
 import csv
+from collections.abc import Callable
 from functools import wraps
 from pathlib import Path
-from typing import Callable
 
-from .models import Transaction, Category, Budget
+from .models import Budget, Category, Transaction
 from .repository import (
-    TransactionRepository,
-    CategoryRepository,
     BudgetRepository,
+    CategoryRepository,
+    TransactionRepository,
 )
 from .validators import (
+    validate_amount,
     validate_date,
     validate_month,
-    validate_amount,
     validate_type,
 )
 
@@ -30,7 +30,7 @@ def handle_errors(func: Callable) -> Callable:
         except FileNotFoundError:
             print("[오류] 파일을 찾을 수 없다.")
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"[오류] 처리 중 문제가 발생했다: {e}")
             return False
 
@@ -64,10 +64,7 @@ class BudgetApp:
 
     def _category_exists(self, name: str) -> bool:
         """카테고리 존재 여부를 확인한다."""
-        return any(
-            category.name == name
-            for category in self.categories.stream()
-        )
+        return any(category.name == name for category in self.categories.stream())
 
     def _generate_id(self) -> str:
         """새 거래 ID를 생성한다."""
@@ -85,11 +82,7 @@ class BudgetApp:
     @staticmethod
     def _parse_tags(tags: str) -> list[str]:
         """태그 문자열을 리스트로 변환한다."""
-        return [
-            tag.strip()
-            for tag in tags.split(",")
-            if tag.strip()
-        ]
+        return [tag.strip() for tag in tags.split(",") if tag.strip()]
 
     def _filter_transactions(
         self,
@@ -128,9 +121,7 @@ class BudgetApp:
         amount = validate_amount(amount)
 
         if not self._category_exists(category):
-            raise ValueError(
-                f"등록되지 않은 카테고리다: {category}"
-            )
+            raise ValueError(f"등록되지 않은 카테고리다: {category}")
 
         transaction = Transaction(
             id=self._generate_id(),
@@ -229,8 +220,7 @@ class BudgetApp:
 
             total_expense += transaction.amount
             category_expenses[transaction.category] = (
-                category_expenses.get(transaction.category, 0)
-                + transaction.amount
+                category_expenses.get(transaction.category, 0) + transaction.amount
             )
 
         if total_income == 0 and total_expense == 0:
@@ -238,11 +228,7 @@ class BudgetApp:
             return {}
 
         budget = next(
-            (
-                item
-                for item in self.budgets.stream()
-                if item.month == month
-            ),
+            (item for item in self.budgets.stream() if item.month == month),
             None,
         )
 
@@ -255,9 +241,7 @@ class BudgetApp:
             "balance": total_income - total_expense,
             "budget": budget_amount,
             "budget_usage": (
-                total_expense / budget_amount * 100
-                if budget_amount
-                else None
+                total_expense / budget_amount * 100 if budget_amount else None
             ),
             "category_expenses": sorted(
                 category_expenses.items(),
@@ -282,7 +266,6 @@ class BudgetApp:
                 amount=amount,
             )
         )
-
         print(f"[저장 완료] {month} 예산 {amount:,}원")
         return True
 
@@ -304,10 +287,7 @@ class BudgetApp:
 
     def list_categories(self) -> list[str]:
         """등록된 카테고리 목록을 반환한다."""
-        return [
-            category.name
-            for category in self.categories.stream()
-        ]
+        return [category.name for category in self.categories.stream()]
 
     @handle_errors
     def remove_category(self, name: str) -> bool:
@@ -316,19 +296,13 @@ class BudgetApp:
             raise ValueError("존재하지 않는 카테고리다.")
 
         if any(
-            transaction.category == name
-            for transaction in self.transactions.stream()
+            transaction.category == name for transaction in self.transactions.stream()
         ):
-            raise ValueError(
-                "사용 중인 카테고리는 삭제할 수 없다."
-            )
+            raise ValueError("사용 중인 카테고리는 삭제할 수 없다.")
 
         categories = [
-            category
-            for category in self.categories.stream()
-            if category.name != name
+            category for category in self.categories.stream() if category.name != name
         ]
-
         self.categories.rewrite(categories)
 
         print(f"[삭제 완료] category={name}")
@@ -368,9 +342,7 @@ class BudgetApp:
 
         if category is not None:
             if not self._category_exists(category):
-                raise ValueError(
-                    f"등록되지 않은 카테고리다: {category}"
-                )
+                raise ValueError(f"등록되지 않은 카테고리다: {category}")
             target.category = category
 
         if amount is not None:
@@ -415,10 +387,8 @@ class BudgetApp:
         to_date: str | None = None,
     ) -> bool:
         """조건에 맞는 거래를 CSV로 내보낸다."""
-        if not month and not (from_date or to_date):
-            raise ValueError(
-                "--month 또는 --from/--to 조건이 필요하다."
-            )
+        if not month and not from_date and not to_date:
+            raise ValueError("--month 또는 --from/--to 조건이 필요하다.")
 
         if month:
             month = validate_month(month)
@@ -492,9 +462,7 @@ class BudgetApp:
                     category = row["category"].strip()
 
                     if not self._category_exists(category):
-                        raise ValueError(
-                            f"등록되지 않은 카테고리: {category}"
-                        )
+                        raise ValueError(f"등록되지 않은 카테고리: {category}")
 
                     transaction = Transaction(
                         id=self._generate_id(),

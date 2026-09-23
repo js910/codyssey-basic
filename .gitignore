@@ -1,5 +1,23 @@
-﻿__pycache__/
+﻿# 파이썬 설정
+__pycache__/
 *.py[cod]
 .venv/
 venv/
 *.log
+
+# VS Code 설정
+.vscode/
+.history/
+
+# Ruff / Sourcery 관련 캐시
+.ruff_cache/
+.sourcery/
+
+# 운영체제(OS) 자동 생성 파일
+.DS_Store
+Thumbs.db
+
+# 데이터 백업
+*.csv
+*.json
+.env

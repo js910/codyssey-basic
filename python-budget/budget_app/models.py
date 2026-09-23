@@ -21,4 +21,3 @@ class Category:
 class Budget:
     month: str
     amount: int
-    
