@@ -101,9 +101,9 @@ python -m budget_app import --from import.csv
 
 데이터는 기본적으로 `./data` 폴더 아래에 3개 이상의 파일로 영구 분리되어 저장됩니다.
 
-1. **`data/transactions.jsonl`**: 거래 내역 (JSONL 포맷, 줄 단위 스트리밍 읽기 지원)
-2. **`data/categories.json`**: 카테고리 목록
-3. **`data/budgets.json`**: 월별 예산 정보
+1. **`data/transactions.jsonl`**: 거래 내역
+2. **`data/categories.jsonl`**: 카테고리 목록
+3. **`data/budgets.jsonl`**: 월별 예산 정보
 
 ---
 
