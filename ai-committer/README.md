@@ -19,10 +19,13 @@ Python과 Gemini API를 활용하여 Git의 변경 사항을 분석하고, 변�
 
 ```text
 ai-committer/
+├── gemini.py
+├── git_utils.py
 ├── main.py
+├── prompts.py
+├── validator.py
 ├── requirements.txt
-├── README.md
-└── .gitignore
+└── README.md
 ```
 
 ## 주요 기능
@@ -106,21 +109,21 @@ python main.py commit --safe-mode
 
 현재 다음 패턴을 마스킹합니다.
 - API Key
-- Bearer Token
+-  Token
 - 이메일 주소
 
 예:
 ```text
 API_KEY="abc123456"
 email=test@example.com
-Authorization: Bearer abcdef123456
+access_tocken=abcdef123456
 ```
 
 Safe Mode 적용 후:
 ```text
 API_KEY="[REDACTED]"
 email=[REDACTED_EMAIL]
-Authorization: Bearer [REDACTED]
+access_tocken=[REDACTED]
 ```
 Safe Mode는 모든 민감정보를 완벽하게 탐지하는 기능은 아니므로 AI API 요청 전에 Git diff를 확인하는 것을 권장합니다.
 
@@ -135,10 +138,11 @@ export GEMINI_API_KEY="YOUR_API_KEY"
 프로젝트 디렉토리에서 가상환경을 활성화한 후 실행합니다.
 ```bash
 # 가상환경 활성화
+python -m venv .venv
 source .venv/bin/activate
 
 # 의존성 설치
-pip install -r requirements.txt
+python -m pip install -r requirements.txt --break-system-packages
 
 # 커밋 메시지 생성
 python main.py commit

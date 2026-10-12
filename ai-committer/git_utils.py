@@ -54,10 +54,10 @@ def mask_sensitive_data(text):
         text
     )
 
-    # Bearer Token
+    # Token
     text = re.sub(
-        r'(?i)(Bearer\s+)[A-Za-z0-9\-._~+/]+=*',
-        r'\1[REDACTED]',
+        r'''(?i)\b[\w-]*token[\w-]*\s*[:=]\s*["']?([^\s"'&,;]+)["']?''',
+        '[REDACTED_TOKEN]',
         text
     )
 
@@ -71,7 +71,7 @@ def mask_sensitive_data(text):
     return text
 
 
-def limit_diff(diff, max_files=10, max_lines=200):
+def limit_diff(diff, max_lines=200):
     lines = diff.splitlines()
 
     if len(lines) <= max_lines:
