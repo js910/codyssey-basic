@@ -7,6 +7,7 @@ from .structures.min_heap import MinHeap
 
 class Entry:
     def __init__(self, key, value, node):
+        """값과 LRU 노드 참조, 바이트 크기, 만료 정보를 하나로 묶는다."""
         self.value = value
         self.node = node
         self.bytes = len(key.encode('utf-8')) + len(value.encode('utf-8'))
@@ -15,6 +16,7 @@ class Entry:
 
 class Store:
     def __init__(self, clock=time.monotonic):
+        """데이터 해시맵과 LRU 리스트, 만료 힙, 메모리 집계를 초기화한다."""
         self.data = HashMap()
         self.lru = DoublyLinkedList()
         self.expirations = MinHeap()
@@ -25,6 +27,7 @@ class Store:
         self._clock = clock
 
     def _delete(self, key):
+        """키의 데이터와 LRU 노드를 삭제하고 사용 메모리를 차감한다."""
         entry = self.data.remove(key)
         if entry is None:
             return False
@@ -34,6 +37,7 @@ class Store:
         return True
 
     def purge_expired(self):
+        """만료된 키를 삭제하고 오래된 만료 기록이 많이 쌓이면 힙을 다시 만든다."""
         now = self._clock()
         while self.expirations.size() and self.expirations.peek()[0] <= now:
             _, key, version = self.expirations.pop()
@@ -50,6 +54,7 @@ class Store:
             self.expirations = heap
 
     def set(self, key, value):
+        """값을 최근 사용 위치에 저장하고 용량이 부족하면 오래 사용하지 않은 키부터 제거한다."""
         self.purge_expired()
         size = len(key.encode('utf-8')) + len(value.encode('utf-8'))
         if self.maxmemory and size > self.maxmemory:
@@ -64,6 +69,7 @@ class Store:
         return True
 
     def get(self, key):
+        """만료되지 않은 값을 조회하고 성공한 키를 최근 사용 위치로 옮긴다."""
         self.purge_expired()
         entry = self.data.get(key)
         if entry is None:
@@ -72,14 +78,17 @@ class Store:
         return entry.value
 
     def delete(self, key):
+        """만료된 키를 정리한 뒤 대상 키를 삭제하고 성공 여부를 1 또는 0으로 반환한다."""
         self.purge_expired()
         return int(self._delete(key))
 
     def exists(self, key):
+        """만료된 키를 정리한 뒤 대상 키가 있으면 1, 없으면 0을 반환한다."""
         self.purge_expired()
         return int(self.data.contains(key))
 
     def expire(self, key, seconds):
+        """키의 만료 시간을 설정하고 입력한 초가 0 이하이면 즉시 삭제한다."""
         self.purge_expired()
         entry = self.data.get(key)
         if entry is None:
@@ -94,6 +103,7 @@ class Store:
         return 1
 
     def ttl(self, key):
+        """남은 만료 시간을 초 단위로 반환하며 만료 설정이 없으면 -1, 키가 없으면 -2를 반환한다."""
         self.purge_expired()
         entry = self.data.get(key)
         if entry is None:

@@ -9,7 +9,7 @@ INTEGER_ERROR = '(error) ERR value is not an integer or out of range'
 OOM = "(error) OOM command not allowed when used_memory > 'maxmemory'"
 
 def parse_integer(value):
-    """부호 있는 64비트 정수만 허용한다."""
+    """입력을 부호 있는 64비트 정수로 바꾸고 잘못된 값은 오류로 처리한다."""
     if re.fullmatch(r'[+-]?[0-9]+', value) is None:
         raise ValueError()
     number = int(value)
@@ -18,6 +18,7 @@ def parse_integer(value):
     return number
 
 def quoted(value):
+    """문자열을 큰따옴표와 필요한 이스케이프 문자를 포함한 출력 형태로 바꾼다."""
     return json.dumps(value, ensure_ascii=False)
 
 class CLI:
@@ -25,7 +26,7 @@ class CLI:
         self.store = store if store is not None else Store()
 
     def execute(self, line):
-        """한 명령을 실행하고 출력 문자열을 반환한다. 종료는 None."""
+        """명령어 한 줄을 검사하고 실행 결과를 반환하며 종료 명령이면 None을 반환한다."""
         try:
             args = shlex.split(line)
         except ValueError:
@@ -98,6 +99,7 @@ class CLI:
         return '(integer) {}'.format(result)
 
 def main():
+    """명령어를 한 줄씩 입력받아 실행하고 결과를 출력하는 과정을 반복한다."""
     cli = CLI()
     while True:
         try:
